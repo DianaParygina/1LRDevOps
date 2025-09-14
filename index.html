@@ -3,66 +3,112 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Мир животных</title>
+    <title>Животный мир</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.5/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-yellow-200 to-green-200 min-h-screen">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Мир животных</a>
+            <a class="navbar-brand" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Главная</a>
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">О нас</a>
+                        <a class="nav-link" href="#">Link</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Категории
+                            Dropdown
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Млекопитающие</a></li>
-                            <li><a class="dropdown-item" href="#">Птицы</a></li>
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Все животные</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
                 </ul>
-                <div class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Поиск животных" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="button">Поиск</button>
-                </div>
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
             </div>
         </div>
     </nav>
 
-    <div id="root" class="container mx-auto p-4"></div>
+    <div id="root" class="container mx-auto p-6"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
         const App = () => {
-            const [animals, setAnimals] = useState([
-                { id: 1, name: "Лев", description: "Царь зверей, обитает в саваннах.", image: "https://via.placeholder.com/150" },
-                { id: 2, name: "Слон", description: "Крупнейшее сухопутное животное.", image: "https://via.placeholder.com/150" }
-            ]);
-            const [newAnimal, setNewAnimal] = useState({ name: "", description: "", image: "" });
+            const [animals, setAnimals] = useState(() => {
+                // Загружаем данные из localStorage при инициализации
+                const savedAnimals = localStorage.getItem('animals');
+                return savedAnimals ? JSON.parse(savedAnimals) : [
+                    {
+                        id: 1,
+                        name: "Лев",
+                        description: "Царь зверей, обитает в саваннах.",
+                        image: "https://via.placeholder.com/150",
+                        maxAge: 15,
+                        habitat: "Саванна",
+                        category: "Млекопитающее"
+                    },
+                    {
+                        id: 2,
+                        name: "Слон",
+                        description: "Крупнейшее сухопутное животное.",
+                        image: "https://via.placeholder.com/150",
+                        maxAge: 70,
+                        habitat: "Джунгли и саванны",
+                        category: "Млекопитающее"
+                    }
+                ];
+            });
+            const [newAnimal, setNewAnimal] = useState({
+                name: "",
+                description: "",
+                image: "",
+                maxAge: "",
+                habitat: "",
+                category: ""
+            });
             const [editingAnimal, setEditingAnimal] = useState(null);
 
+            const categories = [
+                "Млекопитающее",
+                "Птица",
+                "Рептилия",
+                "Амфибия",
+                "Рыба",
+                "Насекомое"
+            ];
+
+            // Сохраняем animals в localStorage при каждом изменении
+            useEffect(() => {
+                localStorage.setItem('animals', JSON.stringify(animals));
+            }, [animals]);
+
             const addAnimal = () => {
-                if (newAnimal.name && newAnimal.description) {
+                if (newAnimal.name && newAnimal.description && newAnimal.maxAge && newAnimal.habitat && newAnimal.category) {
                     setAnimals([...animals, { id: Date.now(), ...newAnimal }]);
-                    setNewAnimal({ name: "", description: "", image: "" });
+                    setNewAnimal({ name: "", description: "", image: "", maxAge: "", habitat: "", category: "" });
+                } else {
+                    alert("Пожалуйста, заполните все обязательные поля!");
                 }
             };
 
@@ -75,42 +121,70 @@
             };
 
             const saveEdit = () => {
-                if (editingAnimal.name && editingAnimal.description) {
+                if (editingAnimal.name && editingAnimal.description && editingAnimal.maxAge && editingAnimal.habitat && editingAnimal.category) {
                     setAnimals(animals.map(animal => animal.id === editingAnimal.id ? editingAnimal : animal));
                     setEditingAnimal(null);
+                } else {
+                    alert("Пожалуйста, заполните все обязательные поля!");
                 }
             };
 
             return (
-                <div className="space-y-6">
-                    <h1 className="text-3xl font-bold text-center">Мир животных</h1>
-                    
+                <div className="space-y-8">
+                    <h1 className="text-4xl font-bold text-center text-gray-800">Мир животных</h1>
+
                     {/* Форма для добавления животного */}
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl font-semibold mb-4">Добавить новое животное</h2>
-                        <input
-                            type="text"
-                            placeholder="Название животного"
-                            value={newAnimal.name}
-                            onChange={(e) => setNewAnimal({ ...newAnimal, name: e.target.value })}
-                            className="w-full p-2 mb-2 border rounded"
-                        />
-                        <textarea
-                            placeholder="Описание животного"
-                            value={newAnimal.description}
-                            onChange={(e) => setNewAnimal({ ...newAnimal, description: e.target.value })}
-                            className="w-full p-2 mb-2 border rounded"
-                        />
-                        <input
-                            type="text"
-                            placeholder="URL изображения"
-                            value={newAnimal.image}
-                            onChange={(e) => setNewAnimal({ ...newAnimal, image: e.target.value })}
-                            className="w-full p-2 mb-2 border rounded"
-                        />
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Добавить новое животное</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input
+                                type="text"
+                                placeholder="Название животного"
+                                value={newAnimal.name}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, name: e.target.value })}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            />
+                            <input
+                                type="text"
+                                placeholder="URL изображения"
+                                value={newAnimal.image}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, image: e.target.value })}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Максимальный возраст (лет)"
+                                value={newAnimal.maxAge}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, maxAge: e.target.value })}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Среда обитания"
+                                value={newAnimal.habitat}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, habitat: e.target.value })}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            />
+                            <select
+                                value={newAnimal.category}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, category: e.target.value })}
+                                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                            >
+                                <option value="" disabled>Выберите категорию</option>
+                                {categories.map(category => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
+                            <textarea
+                                placeholder="Описание животного"
+                                value={newAnimal.description}
+                                onChange={(e) => setNewAnimal({ ...newAnimal, description: e.target.value })}
+                                className="w-full p-3 border rounded-lg md:col-span-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                            />
+                        </div>
                         <button
                             onClick={addAnimal}
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            className="mt-4 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
                         >
                             Добавить
                         </button>
@@ -118,35 +192,59 @@
 
                     {/* Форма редактирования */}
                     {editingAnimal && (
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4">Редактировать животное</h2>
-                            <input
-                                type="text"
-                                value={editingAnimal.name}
-                                onChange={(e) => setEditingAnimal({ ...editingAnimal, name: e.target.value })}
-                                className="w-full p-2 mb-2 border rounded"
-                            />
-                            <textarea
-                                value={editingAnimal.description}
-                                onChange={(e) => setEditingAnimal({ ...editingAnimal, description: e.target.value })}
-                                className="w-full p-2 mb-2 border rounded"
-                            />
-                            <input
-                                type="text"
-                                value={editingAnimal.image}
-                                onChange={(e) => setEditingAnimal({ ...editingAnimal, image: e.target.value })}
-                                className="w-full p-2 mb-2 border rounded"
-                            />
-                            <div className="space-x-2">
+                        <div className="bg-white p-8 rounded-lg shadow-lg">
+                            <h2 className="text-2xl font-semibold mb-6 text-gray-700">Редактировать животное</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input
+                                    type="text"
+                                    value={editingAnimal.name}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, name: e.target.value })}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                />
+                                <input
+                                    type="text"
+                                    value={editingAnimal.image}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, image: e.target.value })}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                />
+                                <input
+                                    type="number"
+                                    value={editingAnimal.maxAge}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, maxAge: e.target.value })}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                />
+                                <input
+                                    type="text"
+                                    value={editingAnimal.habitat}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, habitat: e.target.value })}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                />
+                                <select
+                                    value={editingAnimal.category}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, category: e.target.value })}
+                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                >
+                                    <option value="" disabled>Выберите категорию</option>
+                                    {categories.map(category => (
+                                        <option key={category} value={category}>{category}</option>
+                                    ))}
+                                </select>
+                                <textarea
+                                    value={editingAnimal.description}
+                                    onChange={(e) => setEditingAnimal({ ...editingAnimal, description: e.target.value })}
+                                    className="w-full p-3 border rounded-lg md:col-span-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                                />
+                            </div>
+                            <div className="mt-4 space-x-4">
                                 <button
                                     onClick={saveEdit}
-                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                    className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition"
                                 >
                                     Сохранить
                                 </button>
                                 <button
                                     onClick={() => setEditingAnimal(null)}
-                                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                                    className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
                                 >
                                     Отмена
                                 </button>
@@ -157,20 +255,23 @@
                     {/* Список животных */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {animals.map(animal => (
-                            <div key={animal.id} className="bg-white p-4 rounded-lg shadow-md">
-                                <img src={animal.image} alt={animal.name} className="w-full h-40 object-cover rounded mb-2" />
-                                <h3 className="text-lg font-semibold">{animal.name}</h3>
-                                <p className="text-gray-600">{animal.description}</p>
-                                <div className="mt-4 space-x-2">
+                            <div key={animal.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                                <img src={animal.image} alt={animal.name} className="w-full h-48 object-cover rounded-lg mb-4" />
+                                <h3 className="text-xl font-bold text-gray-800">{animal.name}</h3>
+                                <p className="text-gray-600 mb-2"><span className="font-semibold">Описание:</span> {animal.description}</p>
+                                <p className="text-gray-600 mb-2"><span className="font-semibold">Максимальный возраст:</span> {animal.maxAge} лет</p>
+                                <p className="text-gray-600 mb-2"><span className="font-semibold">Среда обитания:</span> {animal.habitat}</p>
+                                <p className="text-gray-600 mb-4"><span className="font-semibold">Категория:</span> {animal.category}</p>
+                                <div className="flex space-x-4">
                                     <button
                                         onClick={() => startEditing(animal)}
-                                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
                                     >
                                         Редактировать
                                     </button>
                                     <button
                                         onClick={() => deleteAnimal(animal.id)}
-                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                                     >
                                         Удалить
                                     </button>
