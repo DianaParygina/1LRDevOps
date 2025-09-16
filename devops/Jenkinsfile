@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage('Test') {
+            steps {
+                echo 'Running static analysis and linting...'
+            }
+        }
+        stage('Deploy') {
+            when {
+                branch 'main'            }
+            steps {
+                echo 'Deploying project to a server...'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finished. Cleaning up...'
+        }
+    }
+}
